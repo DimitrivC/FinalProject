@@ -29,16 +29,24 @@ import java.util.Iterator;
 
 
 /**
- * A simple {@link Fragment} subclass.
+ * SoreFragment
+ *
+ * Doesn't work, unfortunately. It's prupose is to show, after the user has clicked on the Actionbar
+ * icon in QuizActivity, all the scores and all the emailadresses of all the users. Howeever, it
+ * doesn't. I tried serveral versions of the code, as shown in comments below. I'm quite sure that
+ * something like what I have tried is supposed to work. Some of the different things I tried, I
+ * have also tried in an activity, Main4Activity, but since that didn't work either I deleted that.
+ *
  */
 public class ScoreFragment extends DialogFragment {
 
-    // to read and write: net wat anders dan als je bij assistent -> save and... 4 kijkt
+    // to read and write
     private DatabaseReference mDatabase;
 
     // to check current auth state
     private FirebaseAuth mAuth;
 
+    // to store emailadresses and scores
     private ArrayList<String> forListView = new ArrayList<>();
 
     public ScoreFragment() {
@@ -57,94 +65,94 @@ public class ScoreFragment extends DialogFragment {
 
         final TextView data = getView().findViewById(R.id.textViewData);
 
-        // doesn't work, unfortunately.
 
         mDatabase.child("userscores").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
+
+                // V1
                 DataSnapshot ds = dataSnapshot.child("scores");
                 ds.getChildren();
 
                 for(DataSnapshot child : ds.getChildren()) {
 
-                    //Log.d("email", String.valueOf(ds));
-                    //Log.d("score", String.valueOf(score));
-
-                    // werkt niet, zou denk ik ook niet moeten werken?
+                    // V1.1
                     Score classtest = child.getValue(Score.class);
-                    Log.d("classtest", String.valueOf(classtest));
                     forListView.add(classtest.email + " : " + String.valueOf(classtest.score));
 
+                    // V1.2
+                    String email = ds.child("score").child("email").getValue(String.class);
+                    Integer score = ds.child("score").child("score").getValue(Integer.class);
+                    forListView.add(email + " : " + String.valueOf(score));
 
-                    // werkt niet, zou denk ik ook niet moeten werken
-//                    String email = ds.child("score").child("email").getValue(String.class);
-//                    Integer score = ds.child("score").child("score").getValue(Integer.class);
-//                    forListView.add(email);
-//                    forListView.add(String.valueOf(score));
+                    // V1.3
+                    String email2 = ds.child("email").getValue(String.class);
+                    Integer score2 = ds.child("score").getValue(Integer.class);
+                    forListView.add(email2 + " : " + String.valueOf(score2));
+                }
 
-                    // werkt niet, maar dit zou toch wel moeten?
-                    String email = ds.child("email").getValue(String.class);
-                    forListView.add(email);
-                    Integer score = ds.child("score").getValue(Integer.class);
-                    forListView.add(String.valueOf(score));
+
+                // V2
+                for(DataSnapshot ds2 : dataSnapshot.getChildren()) {
+
+                    // V2.1
+                    Score classtest = ds2.getValue(Score.class);
+                    forListView.add(classtest.email + " : " + String.valueOf(classtest.score));
+
+                    // V2.2
+                    String email = ds.child("score").child("email").getValue(String.class);
+                    Integer score = ds.child("score").child("score").getValue(Integer.class);
+                    forListView.add(email + " : " + String.valueOf(score));
+
+                    // V2.3
+                    String email2 = ds.child("email").getValue(String.class);
+                    Integer score2 = ds.child("score").getValue(Integer.class);
+                    forListView.add(email2 + " : " + String.valueOf(score2));
 
                 }
 
-///////////////////////////////////////////////////////////
-//                mDatabase.addValueEventListener(new ValueEventListener() {
+
+
+                // V3: datasnapshot omzetten naar JSONObject
+//              mDatabase.addValueEventListener(new ValueEventListener() {
 //                    @Override
 //                    public void onDataChange(DataSnapshot dataSnapshot) {
 //
-//                        data.setText(String.valueOf(dataSnapshot));
-//
 //                        for(DataSnapshot snap2 : dataSnapshot.getChildren()){
 //                            String userId = snap2.getKey();
-//                            // deze string is: userscores.
-//                            data.setText(userId);
 //                        }
 //                    }
-//
 //                    @Override
 //                    public void onCancelled(DatabaseError databaseError) {
-//
+//                          to do
 //                    }
 //                });
-
 //                String for_json = after(String.valueOf(dataSnapshot), "DataSnapshot ");
 //                //data.setText(for_json);
 //                try {
 //                    JSONObject test2 = new JSONObject(for_json);
-//
-//                    //data.setText(String.valueOf(test2));
-//
 //                    JSONObject test = (JSONObject) test2.get("value");
-//
-//                    // ipv ??? moet er de hashed passwords of zo?
-//                    JSONObject bla = (JSONObject) test.get("????????");
-//                    // en hoe moet ik dan daar overheen itereren? Met een iterator zoals beneden?
-//
-//                    //data.setText(String.valueOf(bla));
-//
-//                    // value krijgen van userscores
-//
+//                    JSONObject bla = (JSONObject) test.get("?");
 //                }
 //                catch (JSONException e) { }
-/////////////////////////////////////////////////////
 
-//            Iterable emailAndScores = dataSnapshot.getChildren();
+
+
+                // V4
+//                Iterable emailAndScores = dataSnapshot.getChildren();
 //                Iterator iterator = emailAndScores.iterator();
 //                while (iterator.hasNext()){
 //
 //                    // get current object from iterator
 //                    Object score = iterator.next();
 //
-////                    assertThat(score, hasProperty(name));
-//////                    if (score.score != null){
-//////
-//////                    }
-//////                    Score.setText(String.valueOf(score.score));
-//////                    Email.setText(score.email);
+//                    assertThat(score, hasProperty(name));
+//                    if (score.score != null){
+//
+//                    }
+//                    Score.setText(String.valueOf(score.score));
+//                    Email.setText(score.email);
 //                }
 
             }
@@ -153,30 +161,26 @@ public class ScoreFragment extends DialogFragment {
                 // Getting Score failed, log a message
                 Log.w("getting score failed", "loadPost:onCancelled", databaseError.toException());
             }
-        }); // EIND ADD SETONITEMCLICKLISTENER voor snapdatabase
+        });
 
-
-
-        // dit ipv alles van de andere adapter
+        // for V1 en V2
         ArrayAdapter<String> bla = new ArrayAdapter<String>(getActivity().getApplicationContext(), android.R.layout.simple_list_item_1, forListView);
 
-
-        // setAdapter to listview
+        // setAdapter to listView
         ListView scores = getView().findViewById(R.id.listScores);
         scores.setAdapter(bla);
 
-    } // EINDE ONVIEWSTATERESTORED
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
-
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_score, container, false);
     }
 
-    //////////////////////
+
+    // voor V3
 //    // source: https://www.dotnetperls.com/between-before-after-java
 //    static String after(String value, String a) {
 //        // Returns a substring containing all characters after a string.
@@ -190,7 +194,5 @@ public class ScoreFragment extends DialogFragment {
 //        }
 //        return value.substring(adjustedPosA);
 //    }
-/////////////////////////
 
-
-} // EINDE FRAGMENT
+}

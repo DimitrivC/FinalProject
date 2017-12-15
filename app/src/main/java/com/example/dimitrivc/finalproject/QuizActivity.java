@@ -22,7 +22,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserInfo;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,21 +36,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-/*
-Main2Activity
+/**
+QuizActivity
 
 This is the main part of the app. Here, if a user is logged in, they can answer multiple choice
 quiz questions. If correct, this increases their score by one, if incorrect this decreases their
-score by one. The questions and answers are dynamically implemented via an API
-(https://opentdb.com/api_config.php), and the user scores are saved in Firebase and updated in
-Firebase immediately. In this activity, a user can click on an Actionbar Icon, which is supposed to
-show all the scores and emails from all the users, via ScoreFragment. A user can also logout, and
-is than redirected to MainActivity, or is the back button is pressed, they will leave the app
-immediately.
+score by one. The questions and answers are dynamically implemented via an API, and the user scores
+are saved in Firebase and updated in Firebase immediately. In this activity, a user can click on an
+Actionbar Icon, which is supposed to show all the scores and emails from all the users, via
+ScoreFragment. A user can also logout, and is than redirected to LogInActivity, or is the back
+button is pressed, they will leave the app immediately.
+
+Source API: https://opentdb.com/api_config.php
 
  */
 
-public class Main2Activity extends AppCompatActivity {
+public class QuizActivity extends AppCompatActivity {
 
     // to check current auth state
     private FirebaseAuth mAuth;
@@ -61,7 +61,7 @@ public class Main2Activity extends AppCompatActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main2);
+        setContentView(R.layout.quiz_activity);
 
         // to check current auth state (used in onStart and onDataChange)
         mAuth = FirebaseAuth.getInstance();
@@ -99,9 +99,9 @@ public class Main2Activity extends AppCompatActivity {
         // get access to TextViews for the question and correct answer (test).
         final TextView TextViewCategory = findViewById(R.id.textViewCategory);
         final TextView TextViewQuestion = findViewById(R.id.textViewQuestion);
-        //final TextView TextViewCorrectAnswer = findViewById(R.id.textViewCorrectAnswer);
 
-        // to determine random position of correct quize answer in listview
+        // to determine random position of correct quiz answer in listView
+        // and to place correct answer in random position between/above/below incorrect answers
         Random rand = new Random();
         final int value = rand.nextInt(3);
 
@@ -130,25 +130,26 @@ public class Main2Activity extends AppCompatActivity {
                             // convert JSONObject to JSONArray
                             JSONArray jsonArray = response.getJSONArray("results");
                             if (jsonArray != null) {
+                                // set question in textView
                                 TextViewQuestion.setText(jsonArray.getJSONObject(0).getString("question"));
-                                //TextViewCorrectAnswer.setText(jsonArray.getJSONObject(0).getString("correct_answer"));
 
-                                JSONArray jsonArray1 =  jsonArray.getJSONObject(0).getJSONArray("incorrect_answers");
+                                // get incorrect answers
+                                JSONArray jsonArrayIncorrect =  jsonArray.getJSONObject(0).getJSONArray("incorrect_answers");
 
-                                // to store the correct answer on a random point between the incorrect
-                                //answers
+                                // to place correct answer in random place in jsonArray
                                 if (value < 3) {
-                                    String item = jsonArray1.getString(value);
-                                    jsonArray1.put(3, item);
+                                    String item = jsonArrayIncorrect.getString(value);
+                                    jsonArrayIncorrect.put(3, item);
                                 }
+                                jsonArrayIncorrect.put(value, jsonArray.getJSONObject(0).getString("correct_answer"));
 
-                                jsonArray1.put(value, jsonArray.getJSONObject(0).getString("correct_answer"));
-
-                                for (int j = 0; j < jsonArray1.length(); j++) {
-                                    listdata.add(jsonArray1.get(j).toString());
+                                // add jsonArray data to listdata
+                                for (int j = 0; j < jsonArrayIncorrect.length(); j++) {
+                                    listdata.add(jsonArrayIncorrect.get(j).toString());
                                 }
                             }
 
+                            // set adapter with answers to listView
                             listAnswers.setAdapter(adapter);
 
                         } catch (JSONException e) {
@@ -236,9 +237,9 @@ public class Main2Activity extends AppCompatActivity {
                     });
                 }
             }
-        }); // EIND SETONITEMCLICKLISTENER
+        });
 
-    }// EINDE ONCREATE
+    }
 
     // if user clicks on Log out button
     public void logOut(View view) {
@@ -246,8 +247,8 @@ public class Main2Activity extends AppCompatActivity {
         // sign out user
         FirebaseAuth.getInstance().signOut();
 
-        // go to MainActivity
-        startActivity(new Intent(this, MainActivity.class));
+        // go to LogInActivity
+        startActivity(new Intent(this, LogInActivity.class));
     }
 
     // check if user is signed in
@@ -258,9 +259,9 @@ public class Main2Activity extends AppCompatActivity {
         // get access to current user to check if signed in
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
-        // if user is not signed in, go back to MainActivity
+        // if user is not signed in, go back to LogInActivity
         if (currentUser == null){
-            startActivity(new Intent(this, MainActivity.class));
+            startActivity(new Intent(this, LogInActivity.class));
         }
     }
 
@@ -297,4 +298,4 @@ public class Main2Activity extends AppCompatActivity {
         startActivity(a);
     }
 
-}// EINDE ACTIVITY
+}

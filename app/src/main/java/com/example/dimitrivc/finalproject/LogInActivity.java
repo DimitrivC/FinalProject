@@ -17,17 +17,17 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Logger;
 
-/*
-MainActivity
+/**
+LogInActivity
 
 First activity the user encounters (unless they're logged in). This activity gives them the
 opportunity to login (using Firebase) with e-mail and password, or if they don't have an account
-yet, they can go to Main3Activity to create an account. If they log in (or if they are logged in
-already), they will be directed to Main2Activity.
+yet, they can go to CreateUserActivity to create an account. If they log in (or if they are logged in
+already), they will be directed to QuizActivity.
 
  */
 
-public class MainActivity extends AppCompatActivity {
+public class LogInActivity extends AppCompatActivity {
 
     // to check current auth state
     private FirebaseAuth mAuth;
@@ -35,91 +35,79 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.log_in_activity);
 
         // to check current auth state
         FirebaseDatabase.getInstance().setLogLevel(Logger.Level.DEBUG);
         mAuth = FirebaseAuth.getInstance();
 
-    } // EIND ONCREATE
+    }
 
-    // to check if user is signed in, if so, go to Main2 (kan het essentiele deel code hiervan niet gewoon in onCreate?)
+    // to check if user is signed in
     @Override
     public void onStart() {
         super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
+        // get access to user to check if signed in
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
-        // if user is signed in already, go to Main2Activity
+        // if user is signed in already, go to QuizActivity
         if (currentUser != null){
-            startActivity(new Intent(this, Main2Activity.class));
+            startActivity(new Intent(this, QuizActivity.class));
         }
-        // denk overbodige method
-        //updateUI(currentUser);
     }
 
     // method for button to get email, password, and go to method signIn
     public void getMailPassandSignIn(View view) {
 
+        // get access to textView
         EditText E_mail = findViewById(R.id.editTextEmail);
         EditText Password = findViewById(R.id.editTextPassword);
 
+        // get email and password as given by user
         String email = E_mail.getText().toString();
         String password = Password.getText().toString();
 
+        // pass email and password on to signIn
         signIn(email, password);
     }
 
-    // this method is called from method above, to sign user in, and if succesful to send to Main2Activity
+    // to sign user in, and if successful to send to QuizActivity
     public void signIn(String email, String password) {
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
+                            // Sign in success
                             Log.d("signed in", "signInWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            //updateUI(user);
 
-                            Intent intent = new Intent(getApplicationContext(), Main2Activity.class);
-                            startActivity(intent);
+                            // redirect user to QuizActiviy
+                            startActivity(new Intent(getApplicationContext(), QuizActivity.class));
 
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w("sign in failed", "signInWithEmail:failure", task.getException());
-                            Toast.makeText(MainActivity.this, "Authentication failed.",
+                            Toast.makeText(LogInActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
-                            //updateUI(null);
                         }
                     }
                 });
-    } // EIND SIGNIN
-
-    // method for Button to create new account, forwards  you to Main3  to create new account
-    public void goToMain3(View view) {
-
-        //Intent intent = new Intent(this, Main3Activity.class);
-        startActivity(new Intent(this, Main3Activity.class));
     }
 
-    // test method
-    // deze  is puur om makkelijk naar Main2 te kunnen gaan om die te testen.
-    public void goToMain2(View view) {
+    // method for Button to create new account, directs user to CreateUserActivity
+    public void goToCreateUserActivity(View view) {
 
-        Intent intent = new Intent(this, Main2Activity.class);
-        startActivity(intent);
+        startActivity(new Intent(this, CreateUserActivity.class));
     }
 
-
-    // to ensure that when back pressed, the app closes: DIT OOK AAN MAIN2 TOEVOEGEN??????????????
+    // to ensure that when back pressed, the app closes
     @Override
     public void onBackPressed() {
-        //super.onBackPressed();
+
         Intent a = new Intent(Intent.ACTION_MAIN);
         a.addCategory(Intent.CATEGORY_HOME);
         a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(a);
     }
 
-} // EIND ACTIVITY
+}

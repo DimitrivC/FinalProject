@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     tools:context="com.example.dimitrivc.finalproject.ScoreFragment">
 
-    <!-- hierin listview, en dan row_score met elke rij voor de listview -->
     <TextView
         android:id="@+id/textViewData"
         android:layout_width="match_parent"
