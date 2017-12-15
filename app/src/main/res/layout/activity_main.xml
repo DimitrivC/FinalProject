@@ -7,29 +7,47 @@
     android:layout_height="match_parent"
     tools:context="com.example.dimitrivc.finalproject.MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView"
-        android:text=""
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView2"
-        android:text=""
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ListView
-        android:id="@+id/listView"
+    <EditText
+        android:id="@+id/editTextEmail"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:hint="@string/mail" />
+
+    <EditText
+        android:id="@+id/editTextPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:inputType="textPassword"
+        android:hint="@string/pass" />
+
+    <Button
+        android:id="@+id/buttonLogIn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="getMailPassandSignIn"
+        android:text="@string/log" />
+
+    <TextView
+        android:id="@+id/textViewDontHaveAccount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/dont" />
+
+    <Button
+        android:id="@+id/buttonNewAccount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/create"
+        android:onClick="goToMain3"/>
+
+    <Button
+        android:id="@+id/buttonGoToMain2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ga naar quiz voor test"
+        android:onClick="goToMain2"/>
 
 </LinearLayout>
