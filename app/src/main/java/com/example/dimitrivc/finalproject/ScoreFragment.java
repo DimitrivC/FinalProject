@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -32,9 +33,6 @@ import java.util.Iterator;
  */
 public class ScoreFragment extends DialogFragment {
 
-
-    private ScoreAdapter adapter;
-
     // to read and write: net wat anders dan als je bij assistent -> save and... 4 kijkt
     private DatabaseReference mDatabase;
 
@@ -47,7 +45,6 @@ public class ScoreFragment extends DialogFragment {
         // Required empty public constructor
     }
 
-
     @Override
     public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
         super.onViewStateRestored(savedInstanceState);
@@ -59,6 +56,8 @@ public class ScoreFragment extends DialogFragment {
         mAuth = FirebaseAuth.getInstance();
 
         final TextView data = getView().findViewById(R.id.textViewData);
+
+        // doesn't work, unfortunately.
 
         mDatabase.child("userscores").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -75,8 +74,8 @@ public class ScoreFragment extends DialogFragment {
                     // werkt niet, zou denk ik ook niet moeten werken?
                     Score classtest = child.getValue(Score.class);
                     Log.d("classtest", String.valueOf(classtest));
-                    forListView.add(classtest.email);
-                    forListView.add(String.valueOf(classtest.score));
+                    forListView.add(classtest.email + " : " + String.valueOf(classtest.score));
+
 
                     // werkt niet, zou denk ik ook niet moeten werken
 //                    String email = ds.child("score").child("email").getValue(String.class);
@@ -157,15 +156,14 @@ public class ScoreFragment extends DialogFragment {
         }); // EIND ADD SETONITEMCLICKLISTENER voor snapdatabase
 
 
-        // forListView doorgeven aan adapter: is leeg []
-        data.setText(String.valueOf(forListView));
 
-        // get new adapter
-        adapter = new ScoreAdapter(getActivity().getApplicationContext(), R.layout.row_scores, R.layout.fragment_score);
+        // dit ipv alles van de andere adapter
+        ArrayAdapter<String> bla = new ArrayAdapter<String>(getActivity().getApplicationContext(), android.R.layout.simple_list_item_1, forListView);
+
 
         // setAdapter to listview
         ListView scores = getView().findViewById(R.id.listScores);
-        scores.setAdapter(adapter);
+        scores.setAdapter(bla);
 
     } // EINDE ONVIEWSTATERESTORED
 

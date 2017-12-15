@@ -17,6 +17,16 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Logger;
 
+/*
+MainActivity
+
+First activity the user encounters (unless they're logged in). This activity gives them the
+opportunity to login (using Firebase) with e-mail and password, or if they don't have an account
+yet, they can go to Main3Activity to create an account. If they log in (or if they are logged in
+already), they will be directed to Main2Activity.
+
+ */
+
 public class MainActivity extends AppCompatActivity {
 
     // to check current auth state

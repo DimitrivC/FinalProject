@@ -21,6 +21,18 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+/*
+Main3Activity
+
+This activity is for users to create a new account if they don't have an account yet. This is done
+using Firebase. If a user makes a new account, automatically a personal Score object is made and
+stored in Firebase. They will get a starting score of 0 (which they can increase or decrease in
+Main2Activity by answering quiz questions), and also their emailadress is stored, so this can be
+shown in ScoreFragment, with their score. After a new user is succesfully created, they are
+redirected to Main2Activity.
+
+ */
+
 // for the creation of a new account, after which they will be directed to Main2Activity, for the quiz
 public class Main3Activity extends AppCompatActivity {
 
@@ -42,14 +54,15 @@ public class Main3Activity extends AppCompatActivity {
         EditText E_mail = findViewById(R.id.editTextNewEmail);
         EditText Password = findViewById(R.id.editTextNewPassword);
 
+        // get email and password chosen by user
         String email = E_mail.getText().toString();
-        Log.d("email string", email);
         String password = Password.getText().toString();
-        Log.d("password string", password);
 
+        // pass email and password on to createUser
         createUser(email, password);
     }
 
+    // to create a new user for Firebase
     public void createUser(String email, String password) {
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -61,7 +74,7 @@ public class Main3Activity extends AppCompatActivity {
                             final FirebaseUser currentUser = mAuth.getCurrentUser();
                             final DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
 
-                            // set user's score to 0 and get email
+                            // make new Score object for user, and store this in Firebase
                             mDatabase.addListenerForSingleValueEvent(new ValueEventListener(){
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -69,14 +82,14 @@ public class Main3Activity extends AppCompatActivity {
                                     // get access to current user for userId and email
                                     FirebaseUser currentUser = mAuth.getCurrentUser();
 
-                                    // get userId user
+                                    // get userId user to store new object
                                     String userId = currentUser.getUid();
 
                                     // get email user
                                     String email = currentUser.getEmail();
 
                                     // create score object with a score of 0, and the users email
-                                    Score score = new Score(1, email);
+                                    Score score = new Score(0, email);
 
                                     // set new score in database
                                     mDatabase.child("userscores").child(userId).setValue(score);
@@ -110,6 +123,5 @@ public class Main3Activity extends AppCompatActivity {
         //super.onBackPressed();
         startActivity(new Intent(this, MainActivity.class));
     }
-
 
 } // EIND ACTIVITY
