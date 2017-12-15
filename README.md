@@ -25,7 +25,7 @@ Open this in Android Studio, and run it, either on your phone or on an emulator.
 
 ## Built With
 
-* [Android Studio 3.0](https://developer.android.com/studio/index.html) - Building the app
+* [Android Studio 3.0](https://developer.android.com/studio/index.html)
 
 
 ## Authors
