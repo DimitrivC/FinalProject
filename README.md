@@ -5,9 +5,9 @@ makes it almost impossible to have a positive score for a longer period of time?
 is as unfair as RailNL's scorefunction). If you answer "yes" to both of these questions, than this
 is the Android App for you!
 
-![alt text](https://github.com/DimitrivC/FinalProject/blob/master/FinalProjectProgrammerenCreate.jpg "create")
 ![alt text](https://github.com/DimitrivC/FinalProject/blob/master/FinalProjectProgrammerenLogIn.jpg "log in")
 ![alt text](https://github.com/DimitrivC/FinalProject/blob/master/FinalProjectProgrammerenQuiz.jpg "quiz")
+![alt text](https://github.com/DimitrivC/FinalProject/blob/master/FinalProjectProgrammerenCreate.jpg "create")
 
 ### Prerequisites
 
@@ -33,3 +33,9 @@ Open this in Android Studio, and run it, either on your phone or on an emulator.
 ## Authors
 
 * **Dimitri van Capelleveen**
+
+## Review
+
+Two people have been kind enough to review my code:
+* **Thom Oosterhuis**:
+* **Lennart Klein**:
